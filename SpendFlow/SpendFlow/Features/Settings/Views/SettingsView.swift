@@ -3,10 +3,26 @@ import SwiftUI
 struct SettingsView: View {
     private let budgetRepository: BudgetRepository
     private let transactionRepository: TransactionRepository
+    private let accountRepository: AccountRepository
+    private let syncService: SyncService
+    private let exportService: CSVExportService
 
-    init(budgetRepository: BudgetRepository, transactionRepository: TransactionRepository) {
+    @State private var showSyncSettings = false
+    @State private var showExportView = false
+    @State private var showContactSupport = false
+
+    init(
+        budgetRepository: BudgetRepository,
+        transactionRepository: TransactionRepository,
+        accountRepository: AccountRepository,
+        syncService: SyncService,
+        exportService: CSVExportService
+    ) {
         self.budgetRepository = budgetRepository
         self.transactionRepository = transactionRepository
+        self.accountRepository = accountRepository
+        self.syncService = syncService
+        self.exportService = exportService
     }
 
     var body: some View {
@@ -25,15 +41,36 @@ struct SettingsView: View {
                 }
 
                 Section("Data") {
-                    SettingsRow(icon: "icloud", iconColor: .accentBlue, title: "iCloud Sync", value: "Off")
-                    SettingsRow(icon: "square.and.arrow.up", iconColor: .warningOrange, title: "Export CSV")
+                    Button {
+                        showSyncSettings = true
+                    } label: {
+                        SettingsRow(icon: "icloud", iconColor: .accentBlue, title: "iCloud Sync", value: "Off")
+                    }
+
+                    Button {
+                        showExportView = true
+                    } label: {
+                        SettingsRow(icon: "square.and.arrow.up", iconColor: .warningOrange, title: "Export Data")
+                    }
                 }
 
                 Section("About") {
                     SettingsRow(icon: "info.circle", iconColor: .accentBlue, title: "Version", value: AppConstants.appVersion)
                     SettingsRow(icon: "star", iconColor: .warningOrange, title: "Rate SpendFlow")
-                    SettingsRow(icon: "envelope", iconColor: .accentBlue, title: "Contact Support")
-                    SettingsRow(icon: "doc.text", iconColor: .secondary, title: "Privacy Policy")
+                    Button {
+                        showContactSupport = true
+                    } label: {
+                        SettingsRow(icon: "envelope", iconColor: .accentBlue, title: "Contact Support")
+                    }
+                    Link(destination: AppConstants.supportURL) {
+                        SettingsRow(icon: "questionmark.circle", iconColor: .accentBlue, title: "Technical Support")
+                    }
+                    Link(destination: AppConstants.privacyPolicyURL) {
+                        SettingsRow(icon: "doc.text", iconColor: .secondary, title: "Privacy Policy")
+                    }
+                    Link(destination: AppConstants.termsOfServiceURL) {
+                        SettingsRow(icon: "doc.text.fill", iconColor: .secondary, title: "Terms of Service")
+                    }
                 }
 
                 Section {
@@ -47,6 +84,22 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .sheet(isPresented: $showSyncSettings) {
+                let syncViewModel = SyncSettingsViewModel(syncService: syncService)
+                SyncSettingsView(viewModel: syncViewModel)
+            }
+            .sheet(isPresented: $showExportView) {
+                let exportViewModel = ExportViewModel(
+                    exportService: exportService,
+                    transactionRepository: transactionRepository,
+                    budgetRepository: budgetRepository,
+                    accountRepository: accountRepository
+                )
+                ExportView(viewModel: exportViewModel)
+            }
+            .sheet(isPresented: $showContactSupport) {
+                ContactSupportView()
+            }
         }
     }
 }
