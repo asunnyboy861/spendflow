@@ -22,6 +22,10 @@ class CoreDataStack {
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 
+    static func forTesting() -> CoreDataStack {
+        CoreDataStack(inMemory: true)
+    }
+
     var viewContext: NSManagedObjectContext {
         container.viewContext
     }

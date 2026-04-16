@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpendFlow - Technical Support</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .contact-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .contact-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .email-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .email-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .faq-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .faq-item h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .faq-item p {
+            color: #666;
+            margin: 0;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SpendFlow</h1>
+            <p>Technical Support</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>How Can We Help?</h2>
+                <p>Welcome to SpendFlow Support. We're here to help you get the most out of your real-time budget tracking experience. If you have any questions, issues, or feedback, please don't hesitate to reach out to us.</p>
+            </div>
+
+            <div class="contact-card">
+                <h3>Contact Us</h3>
+                <p style="margin-bottom: 20px; color: #666;">For technical support, feature requests, or general inquiries:</p>
+                <a href="mailto:iocompile67692@gmail.com" class="email-link">iocompile67692@gmail.com</a>
+            </div>
+
+            <div class="section">
+                <h2>About SpendFlow</h2>
+                <p>SpendFlow is a real-time budget tracker designed to help you see how much you can spend at a glance. Our app focuses on simplicity and efficiency, making budget tracking effortless.</p>
+                <ul class="feature-list">
+                    <li>Track income and expenses with ease</li>
+                    <li>Manage multiple accounts (bank, credit, cash)</li>
+                    <li>Set daily, weekly, or monthly budgets</li>
+                    <li>Organize transactions by categories</li>
+                    <li>View real-time budget remaining</li>
+                    <li>Secure your data with Face ID / Touch ID</li>
+                    <li>Export your data to CSV format</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <h4>Where is my data stored?</h4>
+                    <p>All your financial data is stored locally on your device using Apple's Core Data framework. We do not collect, transmit, or store any of your personal financial information on external servers.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>Is my data secure?</h4>
+                    <p>Yes! Your data never leaves your device. SpendFlow uses Apple's built-in security features and supports Face ID and Touch ID for additional protection.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>How do I set up a budget?</h4>
+                    <p>Go to Settings → Budget Settings to configure your daily, weekly, or monthly budget. You can also set category-specific budgets for more detailed tracking.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>Can I export my transactions?</h4>
+                    <p>Yes! Navigate to Settings → Export CSV to download your transaction history in a spreadsheet-compatible format.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>How do I add a new account?</h4>
+                    <p>Tap the Accounts tab and use the "+" button to add bank accounts, credit cards, or cash wallets. Each account can be customized with a name, type, and starting balance.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Response Time</h2>
+                <p>We aim to respond to all support inquiries within 24-48 business hours. Please include as much detail as possible when describing your issue, including:</p>
+                <ul class="feature-list">
+                    <li>Your device model and iOS version</li>
+                    <li>SpendFlow app version (found in Settings)</li>
+                    <li>A detailed description of the issue</li>
+                    <li>Steps to reproduce the problem (if applicable)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>SpendFlow v1.0.0 | Last Updated: April 2026</p>
+        </div>
+    </div>
+</body>
+</html>

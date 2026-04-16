@@ -6,12 +6,18 @@ struct ContentView: View {
     private let transactionRepository: TransactionRepository
     private let budgetRepository: BudgetRepository
     private let accountRepository: AccountRepository
+    private let syncService: SyncService
+    private let exportService: CSVExportService
 
     init() {
         let stack = CoreDataStack.shared
         transactionRepository = TransactionRepositoryImpl(coreDataStack: stack)
         budgetRepository = BudgetRepositoryImpl(coreDataStack: stack)
         accountRepository = AccountRepositoryImpl(coreDataStack: stack)
+        exportService = DefaultCSVExportService()
+
+        // Use local sync by default; user can enable iCloud in settings
+        syncService = LocalSyncService()
     }
 
     var body: some View {
@@ -49,7 +55,10 @@ struct ContentView: View {
 
             SettingsView(
                 budgetRepository: budgetRepository,
-                transactionRepository: transactionRepository
+                transactionRepository: transactionRepository,
+                accountRepository: accountRepository,
+                syncService: syncService,
+                exportService: exportService
             )
             .tabItem {
                 Label("Settings", systemImage: "gearshape.fill")
