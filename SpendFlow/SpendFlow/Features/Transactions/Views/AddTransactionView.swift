@@ -5,9 +5,13 @@ struct AddTransactionView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isAmountFocused: Bool
 
-    init(transactionRepository: TransactionRepository) {
+    init(
+        transactionRepository: TransactionRepository,
+        suggestionService: CategorySuggestionService
+    ) {
         _viewModel = StateObject(wrappedValue: AddTransactionViewModel(
-            transactionRepository: transactionRepository
+            transactionRepository: transactionRepository,
+            suggestionService: suggestionService
         ))
     }
 
@@ -19,6 +23,10 @@ struct AddTransactionView: View {
 
                     AmountInputField(amount: $viewModel.amount, placeholder: "0.00")
                         .focused($isAmountFocused)
+
+                    if viewModel.showSuggestion, let suggested = viewModel.suggestedCategory {
+                        suggestionBanner(suggested)
+                    }
 
                     CategoryPicker(
                         selectedCategory: $viewModel.selectedCategory,
@@ -51,6 +59,35 @@ struct AddTransactionView: View {
                 isAmountFocused = true
             }
         }
+    }
+    
+    private func suggestionBanner(_ category: Category) -> some View {
+        HStack(spacing: DesignTokens.Spacing.s) {
+            Image(systemName: "lightbulb.fill")
+                .foregroundStyle(.accentBlue)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Suggested Category")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                
+                Text(category.name)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+            }
+            
+            Spacer()
+            
+            Button("Apply") {
+                viewModel.acceptSuggestion()
+            }
+            .font(.caption)
+            .fontWeight(.semibold)
+            .buttonStyle(.bordered)
+        }
+        .padding(DesignTokens.Spacing.s)
+        .background(Color.accentBlue.opacity(0.1))
+        .cornerRadius(8)
     }
 
     private var typePicker: some View {

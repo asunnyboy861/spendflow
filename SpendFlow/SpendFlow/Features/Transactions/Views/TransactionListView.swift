@@ -70,7 +70,13 @@ struct TransactionListView: View {
                 }
             }
             .sheet(isPresented: $showAddTransaction) {
-                AddTransactionView(transactionRepository: viewModel.transactionRepository)
+                AddTransactionView(
+                    transactionRepository: viewModel.transactionRepository,
+                    suggestionService: CompositeCategorySuggestionService(
+                        ruleBasedSuggester: RuleBasedSuggester(),
+                        learningService: CategoryLearningService()
+                    )
+                )
             }
         }
     }

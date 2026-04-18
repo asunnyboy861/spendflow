@@ -6,23 +6,27 @@ struct SettingsView: View {
     private let accountRepository: AccountRepository
     private let syncService: SyncService
     private let exportService: CSVExportService
+    private let bankSyncService: BankSyncService
 
     @State private var showSyncSettings = false
     @State private var showExportView = false
     @State private var showContactSupport = false
+    @State private var showBankConnection = false
 
     init(
         budgetRepository: BudgetRepository,
         transactionRepository: TransactionRepository,
         accountRepository: AccountRepository,
         syncService: SyncService,
-        exportService: CSVExportService
+        exportService: CSVExportService,
+        bankSyncService: BankSyncService
     ) {
         self.budgetRepository = budgetRepository
         self.transactionRepository = transactionRepository
         self.accountRepository = accountRepository
         self.syncService = syncService
         self.exportService = exportService
+        self.bankSyncService = bankSyncService
     }
 
     var body: some View {
@@ -34,6 +38,12 @@ struct SettingsView: View {
                     } label: {
                         SettingsRow(icon: "slider.horizontal.3", iconColor: .accentBlue, title: "Budget Settings")
                     }
+                    
+                    NavigationLink {
+                        SharedBudgetView()
+                    } label: {
+                        SettingsRow(icon: "person.2.fill", iconColor: .accentPurple, title: "Shared Budget")
+                    }
                 }
 
                 Section("Security") {
@@ -41,6 +51,17 @@ struct SettingsView: View {
                 }
 
                 Section("Data") {
+                    Button {
+                        showBankConnection = true
+                    } label: {
+                        SettingsRow(
+                            icon: "link",
+                            iconColor: .accentBlue,
+                            title: "Bank Connection",
+                            value: "Not Connected"
+                        )
+                    }
+                    
                     Button {
                         showSyncSettings = true
                     } label: {
@@ -55,6 +76,12 @@ struct SettingsView: View {
                 }
 
                 Section("About") {
+                    NavigationLink {
+                        EducationView()
+                    } label: {
+                        SettingsRow(icon: "book.fill", iconColor: .accentPurple, title: "Financial Education")
+                    }
+                    
                     SettingsRow(icon: "info.circle", iconColor: .accentBlue, title: "Version", value: AppConstants.appVersion)
                     SettingsRow(icon: "star", iconColor: .warningOrange, title: "Rate SpendFlow")
                     Button {
@@ -84,6 +111,12 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .sheet(isPresented: $showBankConnection) {
+                BankConnectionView(
+                    bankSyncService: bankSyncService,
+                    transactionRepository: transactionRepository
+                )
+            }
             .sheet(isPresented: $showSyncSettings) {
                 let syncViewModel = SyncSettingsViewModel(syncService: syncService)
                 SyncSettingsView(viewModel: syncViewModel)

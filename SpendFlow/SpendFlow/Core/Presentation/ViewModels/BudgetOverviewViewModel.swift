@@ -20,8 +20,8 @@ class BudgetOverviewViewModel: ObservableObject {
         }
     }
 
-    private let transactionRepository: TransactionRepository
-    private let budgetRepository: BudgetRepository
+    let transactionRepository: TransactionRepository
+    let budgetRepository: BudgetRepository
     private var cancellables = Set<AnyCancellable>()
 
     init(

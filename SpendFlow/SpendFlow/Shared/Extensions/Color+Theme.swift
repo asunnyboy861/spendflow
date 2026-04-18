@@ -27,4 +27,13 @@ extension Color {
     static let incomeGreen = Color(hex: "34C759")
     static let warningOrange = Color(hex: "FF9500")
     static let accentBlue = Color(hex: "007AFF")
+    static let accentPurple = Color(hex: "5856D6")
+}
+
+extension ShapeStyle where Self == Color {
+    static var expenseRed: Color { Color.expenseRed }
+    static var incomeGreen: Color { Color.incomeGreen }
+    static var warningOrange: Color { Color.warningOrange }
+    static var accentBlue: Color { Color.accentBlue }
+    static var accentPurple: Color { Color.accentPurple }
 }

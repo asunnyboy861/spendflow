@@ -8,6 +8,8 @@ struct ContentView: View {
     private let accountRepository: AccountRepository
     private let syncService: SyncService
     private let exportService: CSVExportService
+    private let suggestionService: CategorySuggestionService
+    private let bankSyncService: BankSyncService
 
     init() {
         let stack = CoreDataStack.shared
@@ -18,6 +20,17 @@ struct ContentView: View {
 
         // Use local sync by default; user can enable iCloud in settings
         syncService = LocalSyncService()
+        
+        // Initialize category suggestion service
+        let ruleSuggester = RuleBasedSuggester()
+        let learningService = CategoryLearningService()
+        suggestionService = CompositeCategorySuggestionService(
+            ruleBasedSuggester: ruleSuggester,
+            learningService: learningService
+        )
+        
+        // Initialize bank sync service (using mock for now)
+        bankSyncService = MockBankSyncService()
     }
 
     var body: some View {
@@ -25,7 +38,8 @@ struct ContentView: View {
             DashboardView(
                 transactionRepository: transactionRepository,
                 budgetRepository: budgetRepository,
-                accountRepository: accountRepository
+                accountRepository: accountRepository,
+                suggestionService: suggestionService
             )
             .tabItem {
                 Label("Home", systemImage: "house.fill")
@@ -47,23 +61,33 @@ struct ContentView: View {
             }
             .tag(2)
 
+            InsightsView(
+                transactionRepository: transactionRepository,
+                budgetRepository: budgetRepository
+            )
+            .tabItem {
+                Label("Insights", systemImage: "chart.bar.xaxis")
+            }
+            .tag(3)
+
             AccountsListView(accountRepository: accountRepository)
                 .tabItem {
                     Label("Accounts", systemImage: "wallet.pass.fill")
                 }
-                .tag(3)
+                .tag(4)
 
             SettingsView(
                 budgetRepository: budgetRepository,
                 transactionRepository: transactionRepository,
                 accountRepository: accountRepository,
                 syncService: syncService,
-                exportService: exportService
+                exportService: exportService,
+                bankSyncService: bankSyncService
             )
             .tabItem {
                 Label("Settings", systemImage: "gearshape.fill")
             }
-            .tag(4)
+            .tag(5)
         }
         .tint(.accentColor)
     }

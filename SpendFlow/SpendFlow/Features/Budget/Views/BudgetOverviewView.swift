@@ -2,6 +2,7 @@ import SwiftUI
 
 struct BudgetOverviewView: View {
     @StateObject private var viewModel: BudgetOverviewViewModel
+    @State private var showZeroBasedBudget = false
 
     init(
         transactionRepository: TransactionRepository,
@@ -25,6 +26,31 @@ struct BudgetOverviewView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Budget")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        NavigationLink {
+                            BudgetSettingsView(budgetRepository: viewModel.budgetRepository)
+                        } label: {
+                            Label("Budget Settings", systemImage: "slider.horizontal.3")
+                        }
+                        
+                        Button {
+                            showZeroBasedBudget = true
+                        } label: {
+                            Label("Zero-Based Budget", systemImage: "dollarsign.circle")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                }
+            }
+            .sheet(isPresented: $showZeroBasedBudget) {
+                IncomeAllocationView(
+                    transactionRepository: viewModel.transactionRepository,
+                    budgetRepository: viewModel.budgetRepository
+                )
+            }
         }
     }
 
