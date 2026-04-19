@@ -18,10 +18,8 @@ struct ContentView: View {
         accountRepository = AccountRepositoryImpl(coreDataStack: stack)
         exportService = DefaultCSVExportService()
 
-        // Use local sync by default; user can enable iCloud in settings
         syncService = LocalSyncService()
         
-        // Initialize category suggestion service
         let ruleSuggester = RuleBasedSuggester()
         let learningService = CategoryLearningService()
         suggestionService = CompositeCategorySuggestionService(
@@ -29,11 +27,53 @@ struct ContentView: View {
             learningService: learningService
         )
         
-        // Initialize bank sync service (using mock for now)
         bankSyncService = MockBankSyncService()
     }
 
     var body: some View {
+        Group {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                iPadLayout
+            } else {
+                iPhoneLayout
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var iPadLayout: some View {
+        NavigationSplitView {
+            sidebarList
+                .navigationTitle("SpendFlow")
+                .listStyle(.sidebar)
+        } detail: {
+            detailView
+        }
+        .navigationSplitViewStyle(.balanced)
+    }
+    
+    private var sidebarList: some View {
+        List {
+            sidebarItem(icon: "house.fill", title: "Home", tag: 0)
+            sidebarItem(icon: "list.bullet.rectangleportait", title: "Transactions", tag: 1)
+            sidebarItem(icon: "chart.pie.fill", title: "Budget", tag: 2)
+            sidebarItem(icon: "chart.bar.xaxis", title: "Insights", tag: 3)
+            sidebarItem(icon: "wallet.pass.fill", title: "Accounts", tag: 4)
+            sidebarItem(icon: "gearshape.fill", title: "Settings", tag: 5)
+        }
+    }
+    
+    private func sidebarItem(icon: String, title: String, tag: Int) -> some View {
+        Button {
+            selectedTab = tag
+        } label: {
+            Label(title, systemImage: icon)
+        }
+        .listRowBackground(selectedTab == tag ? Color.accentColor.opacity(0.15) : Color.clear)
+    }
+    
+    @ViewBuilder
+    private var iPhoneLayout: some View {
         TabView(selection: $selectedTab) {
             DashboardView(
                 transactionRepository: transactionRepository,
@@ -48,7 +88,7 @@ struct ContentView: View {
 
             TransactionListView(transactionRepository: transactionRepository)
                 .tabItem {
-                    Label("Transactions", systemImage: "list.bullet.rectangleportait")
+                    Label("Transactions", systemImage: "list.bullet.rectangle.portrait")
                 }
                 .tag(1)
 
@@ -90,6 +130,49 @@ struct ContentView: View {
             .tag(5)
         }
         .tint(.accentColor)
+    }
+    
+    @ViewBuilder
+    private var detailView: some View {
+        switch selectedTab {
+        case 0:
+            DashboardView(
+                transactionRepository: transactionRepository,
+                budgetRepository: budgetRepository,
+                accountRepository: accountRepository,
+                suggestionService: suggestionService
+            )
+        case 1:
+            TransactionListView(transactionRepository: transactionRepository)
+        case 2:
+            BudgetOverviewView(
+                transactionRepository: transactionRepository,
+                budgetRepository: budgetRepository
+            )
+        case 3:
+            InsightsView(
+                transactionRepository: transactionRepository,
+                budgetRepository: budgetRepository
+            )
+        case 4:
+            AccountsListView(accountRepository: accountRepository)
+        case 5:
+            SettingsView(
+                budgetRepository: budgetRepository,
+                transactionRepository: transactionRepository,
+                accountRepository: accountRepository,
+                syncService: syncService,
+                exportService: exportService,
+                bankSyncService: bankSyncService
+            )
+        default:
+            DashboardView(
+                transactionRepository: transactionRepository,
+                budgetRepository: budgetRepository,
+                accountRepository: accountRepository,
+                suggestionService: suggestionService
+            )
+        }
     }
 }
 

@@ -52,20 +52,28 @@ struct ExportTests {
     @Test("CSVExportService exports transactions successfully")
     func testExportTransactions() async throws {
         let service = DefaultCSVExportService()
-        let options = ExportOptions.default
+        
+        let calendar = Calendar.current
+        let now = Date()
+        let oneHourAgo = calendar.date(byAdding: .hour, value: -1, to: now)!
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: now)!
+
+        var options = ExportOptions.default
+        options.startDate = oneHourAgo
+        options.endDate = tomorrow
 
         let transactions = [
             Transaction(
                 amount: 50.0,
                 category: "Food",
-                date: Date(),
+                date: now,
                 note: "Lunch",
                 type: .expense
             ),
             Transaction(
                 amount: 100.0,
                 category: "Salary",
-                date: Date(),
+                date: now,
                 note: "Monthly salary",
                 type: .income
             )
@@ -74,7 +82,6 @@ struct ExportTests {
         let url = try await service.exportTransactions(transactions, options: options)
         #expect(url.pathExtension == "csv")
 
-        // Verify file exists
         let fileManager = FileManager.default
         #expect(fileManager.fileExists(atPath: url.path))
     }

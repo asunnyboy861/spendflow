@@ -29,22 +29,11 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: DesignTokens.Spacing.l) {
-                    RemainingBudgetCard(
-                        remaining: viewModel.remainingThisMonth,
-                        total: viewModel.spentThisMonth,
-                        progress: viewModel.budgetProgress,
-                        period: "This Month"
-                    )
-                    
-                    if !billViewModel.overdueBills.isEmpty || !billViewModel.upcomingBills.isEmpty {
-                        billsPreviewCard
-                    }
-
-                    RecentTransactionsList(transactions: viewModel.recentTransactions)
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    iPadContent
+                } else {
+                    iPhoneContent
                 }
-                .padding(.horizontal, DesignTokens.Spacing.m)
-                .padding(.bottom, 80)
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("SpendFlow")
@@ -73,9 +62,105 @@ struct DashboardView: View {
                 QuickAddButton {
                     showAddTransaction = true
                 }
-                .padding(.trailing, DesignTokens.Spacing.m)
-                .padding(.bottom, DesignTokens.Spacing.l)
+                .padding(.trailing, UIDevice.current.userInterfaceIdiom == .pad ? DesignTokens.Spacing.l : DesignTokens.Spacing.m)
+                .padding(.bottom, UIDevice.current.userInterfaceIdiom == .pad ? DesignTokens.Spacing.xl : DesignTokens.Spacing.l)
             }
+        }
+    }
+    
+    @ViewBuilder
+    private var iPadContent: some View {
+        VStack(spacing: DesignTokens.Spacing.xl) {
+            HStack(spacing: DesignTokens.Spacing.xl) {
+                RemainingBudgetCard(
+                    remaining: viewModel.remainingThisMonth,
+                    total: viewModel.spentThisMonth,
+                    progress: viewModel.budgetProgress,
+                    period: "This Month"
+                )
+                .frame(maxWidth: .infinity)
+                
+                if !billViewModel.overdueBills.isEmpty || !billViewModel.upcomingBills.isEmpty {
+                    billsPreviewCard
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            
+            HStack(spacing: DesignTokens.Spacing.xl) {
+                RecentTransactionsList(transactions: viewModel.recentTransactions)
+                    .frame(maxWidth: .infinity)
+                
+                quickActionsCard
+                    .frame(width: 280)
+            }
+        }
+        .padding(.horizontal, 32)
+        .padding(.top, 16)
+        .padding(.bottom, 40)
+    }
+    
+    @ViewBuilder
+    private var iPhoneContent: some View {
+        VStack(spacing: DesignTokens.Spacing.l) {
+            RemainingBudgetCard(
+                remaining: viewModel.remainingThisMonth,
+                total: viewModel.spentThisMonth,
+                progress: viewModel.budgetProgress,
+                period: "This Month"
+            )
+            
+            if !billViewModel.overdueBills.isEmpty || !billViewModel.upcomingBills.isEmpty {
+                billsPreviewCard
+            }
+
+            RecentTransactionsList(transactions: viewModel.recentTransactions)
+        }
+        .padding(.horizontal, DesignTokens.Spacing.m)
+        .padding(.bottom, 80)
+    }
+    
+    private var quickActionsCard: some View {
+        VStack(spacing: DesignTokens.Spacing.m) {
+            Text("Quick Actions")
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            VStack(spacing: DesignTokens.Spacing.s) {
+                quickActionButton(icon: "plus.circle.fill", title: "Add Expense", color: .accentColor) {
+                    showAddTransaction = true
+                }
+                
+                quickActionButton(icon: "chart.pie.fill", title: "View Budget", color: .blue) {
+                    // Navigate to budget
+                }
+                
+                quickActionButton(icon: "bell.badge.fill", title: "Bill Reminders", color: .orange) {
+                    showBillReminder = true
+                }
+                
+                quickActionButton(icon: "chart.bar.xaxis", title: "Insights", color: .purple) {
+                    // Navigate to insights
+                }
+            }
+        }
+        .padding(DesignTokens.Spacing.l)
+        .cardStyle()
+    }
+    
+    private func quickActionButton(icon: String, title: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundStyle(color)
+                    .frame(width: 24)
+                Text(title)
+                    .font(.subheadline)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.vertical, DesignTokens.Spacing.s)
         }
     }
     
